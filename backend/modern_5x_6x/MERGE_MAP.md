@@ -4,7 +4,7 @@
 > backend — kecuali **Param XOR + .ko strip** (ditunda, bukan v1) dan
 > **Builder YAML** (tetap v2). Self-hide & backdoor yang tadinya "studi/v2"
 > kini **kode lengkap** (`module_hide.c`, `backdoor.c`; legacy pakai sinyal
-> `kill -s64/62`). Semua status = 🚧 sampai lolos TESTING.md.
+> `kill -s 64`/`62`). Semua status = 🚧 sampai lolos TESTING.md.
 
 > Peta "file mana dari repo mana" untuk tahap penggabungan.
 > Aturan main: **baca → pahami → tulis ulang sendiri** untuk sumber

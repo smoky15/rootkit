@@ -23,7 +23,7 @@ build, vermagic-check, load, dan memasang auto-load saat boot.
 
 | Kernel | Backend | Status |
 |---|---|---|
-| 2.6 – 3.x | `backend/legacy_4x` (`L4X_OLD_ARGS`) | 🚧 kode ada, belum diuji |
+| 2.6 – 3.x | `backend/legacy_4x` (`L4X_OLD_ARGS`) | ✅ teruji di **3.10 el7** · 🚧 sisa rentang |
 | 4.0 – 4.19 | `backend/legacy_4x` | 🚧 kode ada, belum diuji |
 | 5.0 – 6.8 | `backend/modern_5x_6x` | 🚧 v1 (inti), belum diuji |
 | 6.9+ | `backend/newest_6x` | 🚧 kode ada, belum diuji |
@@ -39,8 +39,8 @@ build, vermagic-check, load, dan memasang auto-load saat boot.
 | Sembunyikan file/folder **by nama persis** | ✅ param `hide=` | ✅ `/proc/rkit` + CLI | ✅ |
 | Sembunyikan PID | ✅ param `hidepid=` | ✅ | ✅ |
 | Sembunyikan **koneksi** (port di `/proc/net/*`) | ✅ param `hideport=` | ✅ `rkit hide port` | ✅ |
-| LPE: `kill -s63 1` | ✅ | ✅ | ✅ |
-| **Self-hide modul** | ✅ `kill -s64/62` | ✅ `rkit hide/unhide mod` | ✅ |
+| LPE: `kill -s 63 1` | ✅ | ✅ | ✅ |
+| **Self-hide modul** | ✅ `kill -s 64` / `kill -s 62` | ✅ `rkit hide/unhide mod` | ✅ |
 | **Backdoor port-knock** (opt-in `backdoor_ip`) | ✅ | ✅ | ✅ |
 | Auto-load saat boot + restore state | ✅ | ✅ | ✅ |
 | Kontrol runtime | sinyal (gaya Diamorphine) | `/proc/rkit` | `/proc/rkit` |

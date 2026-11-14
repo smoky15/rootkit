@@ -7,10 +7,35 @@
 
 | Kernel | Backend | Status | Catatan |
 |---|---|---|---|
-| 2.6.x – 3.x | `legacy_4x` (`L4X_OLD_ARGS`) | 🚧 | kode ada (konvensi argumen lama) — uji di VM lama |
+| **3.10.0-1160.59.1.el7** | `legacy_4x` (`L4X_OLD_ARGS`) | ✅ | **CentOS 7.9 —2026-11-15: seluruh checklist lolos** (detail: Bukti Uji di bawah) |
+| 2.6.x – 3.x (lain) | `legacy_4x` (`L4X_OLD_ARGS`) | 🚧 | kode ada (konvensi argumen lama) — uji di VM lama |
 | 4.0 – 4.16 | `legacy_4x` (`L4X_OLD_ARGS`) | 🚧 | signature argumen individual — target Ubuntu16.04 (4.4) |
 | 4.17 – 4.19 | `legacy_4x` (pt_regs) | 🚧 | target RHEL8 (4.18); Ubuntu18.04 (4.15) masih konvensi lama |
 | catatan | | ❌ | **jangan diuji di >=5.x**: `STRICT_KERNEL_RWX` + risiko panic (pembelajaran dari uji Reptile di 5.15) |
+
+### Bukti Uji — CentOS7 / 3.10.0-1160.59.1.el7.x86_64 (2026-11-15)
+
+```
+distro        : CentOS Linux 7.9.2009
+build         : OK (gcc el7, tanpa patch tambahan)
+load          : OK (vermagic cocok; tanpa OOPS sepanjang uji;
+                unload = sys_call_table dipulihkan tiap rmmod)
+fitur teruji  : LPE kill -s 63        (OK — uid=0 dari user nobody)
+                hide file             (OK — glibc2.17 pakai getdents(78);
+                                          kini getdents & getdents64 dua2nya di-hook)
+                hide PID              (OK — ps & ls /proc tak melihat;
+                                          akses path langsung tetap = batas desain)
+                hide port             (OK di netstat; ss/netlink terlihat = batas desain)
+                self-hide modul       (OK — sinyal 64/62; catatan: sinyal65 TIDAK
+                                          valid di x86 (maks64), diganti62)
+                backdoor port-knock   (OK e2e — knock1337 -> shell masuk listener;
+                                          TANPA backdoor_ip = nonaktif total)
+                state boot            (OK — /var/lib/rkit/state dipulihkan
+                                          rkit-load.service)
+daemon        : online (POLL_INTERVAL=60 untuk uji; >=600 untuk pemakaian nyata)
+patch         : tidak ada
+status        : ✅
+```
 
 ## Era2 — modern (ftrace / kprobes)
 

