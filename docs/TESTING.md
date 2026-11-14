@@ -78,5 +78,5 @@ tanggal       : <YYYY-MM-DD>
 - [ ] **Backdoor mati default**: load TANPA `backdoor_ip` → knock1337 →
       TIDAK ada shell (harusnya nonaktif total)
 - [ ] **Catatan backend legacy**: tidak punya `/proc/rkit` & CLI —
-      kontrol via sinyal: `kill -s64 1` (hide modul), `kill -s65 1`
+      kontrol via sinyal: `kill -s64 1` (hide modul), `kill -s62 1`
       (tampilkan modul), daftar hide via param `insmod ... hide=... hideport=...`

