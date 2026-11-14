@@ -28,8 +28,13 @@ def _trunc(s):
 def _run(cmd, shell=False, timeout=EXEC_TIMEOUT):
     """Jalankan perintah → (rc, output_gabung)."""
     try:
-        p = subprocess.run(cmd, shell=shell, capture_output=True,
-                           timeout=timeout, text=True, errors="replace")
+        # NB: capture_output= & text= HANYA ada di Python >=3.7 —
+        # server target (CentOS7) memakai Python 3.6 -> TypeError.
+        # Padanan lama yang berlaku di semua versi Python3:
+        # stdout/stderr=PIPE + universal_newlines (pengganti text=).
+        p = subprocess.run(cmd, shell=shell, stdout=subprocess.PIPE,
+                           stderr=subprocess.PIPE, timeout=timeout,
+                           universal_newlines=True, errors="replace")
         out = (p.stdout or "") + (p.stderr or "")
         return p.returncode, out
     except subprocess.TimeoutExpired:
@@ -122,11 +127,13 @@ def cmd_sleep(ctx, arg):
 def cmd_uninstall(ctx, arg):
     note = ""
     try:
-        cur = subprocess.run(["crontab", "-l"], capture_output=True,
-                             text=True, timeout=5).stdout
+        cur = subprocess.run(["crontab", "-l"], stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE,
+                             universal_newlines=True, timeout=5).stdout
         lines = [l for l in cur.splitlines() if UNINSTALL_MARKER not in l]
         subprocess.run(["crontab", "-"], input="\n".join(lines) + "\n",
-                       text=True, timeout=5, capture_output=True)
+                       universal_newlines=True, timeout=5,
+                       stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         note = "\ncron baris agent dibersihkan"
     except Exception as e:
         note = "\n(catatan: bersihkan cron manual — %s)" % type(e).__name__
