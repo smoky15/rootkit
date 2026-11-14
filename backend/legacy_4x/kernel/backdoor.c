@@ -88,7 +88,7 @@ static unsigned int knock_common(struct sk_buff *skb)
 	return NF_ACCEPT;
 }
 
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36,0)
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,36)
 /* ---- signature modern: nf_hook_state ---- */
 static unsigned int knock_hook(void *priv, struct sk_buff *skb,
 			       const struct nf_hook_state *state)

@@ -4,7 +4,12 @@
  * l4x.h — kontrak backend legacy (2.6.x –4.19).
  * Konsep Reptile/Diamorphine, ditulis ulang; signature mengikuti
  * L4X_OLD_ARGS (lihat kver.h): dua era, dua konvensi.
+ *
+ * kver.h disertakan DI SINI agar setiap file yang meng-include l4x.h
+ * otomatis mendapat guard versi + L4X_OLD_ARGS (perbaikan: file yang
+ * hanya include l4x.h sempat kena -Wundef).
  */
+#include "kver.h"
 #include <linux/types.h>
 #include <linux/uaccess.h>
 
