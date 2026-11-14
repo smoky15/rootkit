@@ -1,0 +1,4 @@
+# Selalu pakai LF — kunci ending baris agar konsisten di semua OS.
+# Tanpa ini: clone dari Windows (autocrlf) mengubah install.sh jadi CRLF
+# -> script bash gagal dengan "\r: command not found".
+* text=auto eol=lf
