@@ -1,0 +1,19 @@
+LISENSI PROYEK: GNU GENERAL PUBLIC LICENSE Version3,29 Juni2007
+
+Repo ini dilisensikan di bawah GNU GPLv3.
+Teks lengkap resmi tersedia di:
+    https://www.gnu.org/licenses/gpl-3.0.html
+
+Ringkasan (bukan pengganti teks resmi):
+- Anda bebas memakai, mempelajari, dan memodifikasi kode ini
+- Karya turunan WAJIB dirilis dengan lisensi yang sama (GPLv3)
+- Disediakan TANPA JAMINAN apa pun
+- Penggunaan hanya untuk tujuan edukasi/diagnostik pada sistem milik
+  sendiri atau dengan izin — lihat docs/DISCLAIMER.md
+
+Kredit sumber inspirasi (lihat README bagian Kredit):
+- flashnuke/mod-rootkit (GPLv3) — struktur engine modern
+- lukasbalazik/1337kit (BSD-3) — konsep builder
+- Zhang1933/linux-rootkit (MIT) — kontrol ICMP
+- bds_lkm_ftrace, Reptile, nurupo, Diamorphine — konsep tanpa salinan
+  kode langsung (lisensi asal tidak jelas; "inspired by")

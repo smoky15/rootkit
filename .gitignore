@@ -1,0 +1,26 @@
+# JANGAN PERNAH commit token / konfigurasi asli
+config.ini
+*.token
+
+# artefak build modul kernel
+*.o
+*.ko
+*.mod
+*.mod.c
+.*.cmd
+Module.symvers
+Module.markers
+modules.order
+.tmp_versions/
+output/
+
+# binary userland hasil build
+/control/cli/bin/
+/control/cli/rkit
+/control/telegram/*.pyc
+__pycache__/
+
+# log runtime & sampah
+*.log
+nohup.out
+.cache/
