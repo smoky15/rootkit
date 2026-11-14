@@ -32,6 +32,9 @@ fitur teruji  : LPE kill -s 63        (OK — uid=0 dari user nobody)
                                           TANPA backdoor_ip = nonaktif total)
                 state boot            (OK — /var/lib/rkit/state dipulihkan
                                           rkit-load.service)
+reboot penuh   : OK (2026-11-15 — modul auto-load @4.6 dtk sejak boot dengan
+                daftar hide '1 nama' pulih dari state; daemon via cron;
+                repo di /opt/.cache/.rkit karena /dev/shm = tmpfs terhapus)
 daemon        : online (POLL_INTERVAL=60 untuk uji; >=600 untuk pemakaian nyata)
 patch         : tidak ada
 status        : ✅
