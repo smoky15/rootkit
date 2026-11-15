@@ -79,7 +79,9 @@ for c in gcc make; do
 	fi
 done
 if [ ! -e "/lib/modules/$K/build" ]; then
-	echo "[!] kernel headers tidak ada -> apt-get install linux-headers-\$(uname -r)"
+	echo "[!] kernel headers tidak ada -> install dulu:"
+	echo "      Ubuntu/Debian : apt-get install linux-headers-\$(uname -r)"
+	echo "      Proxmox VE    : apt-get install pve-headers-\$(uname -r)"
 	MISS=1
 fi
 if [ "$MISS" -ne 0 ]; then
