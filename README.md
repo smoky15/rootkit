@@ -26,7 +26,7 @@ build, vermagic-check, load, dan memasang auto-load saat boot.
 | 2.6 – 3.x | `backend/legacy_4x` (`L4X_OLD_ARGS`) | ✅ teruji di **3.10 el7** · 🚧 sisa rentang |
 | 4.0 – 4.19 | `backend/legacy_4x` | 🚧 kode ada, belum diuji |
 | 5.0 – 6.8 | `backend/modern_5x_6x` | 🧪 build+load OK (5.11-aws) · fitur menyusul |
-| 6.9+ | `backend/newest_6x` | 🚧 kode ada, belum diuji |
+| 6.9+ | `backend/newest_6x` | 🧪 build+load OK (6.14.0-37) · fitur menyusul |
 
 > Status sengaja dibuat jujur. Tidak ada klaim "works on everything"
 > sebelum benar-benar diuji. Setiap kode wajib lolos `docs/TESTING.md`

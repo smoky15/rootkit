@@ -54,7 +54,7 @@ status        : ✅
 
 | Kernel | Backend | Status | Catatan |
 |---|---|---|---|
-| 6.9 – sekarang | `newest_6x` (`rkit6x.c`) | 🚧 | kode ada, belum diuji — teknik identik modern; eBPF tetap opsi |
+| 6.9 – sekarang | `newest_6x` (`rkit6x.c`) | 🧪 | **2026-11-15: build+load OK di 6.14.0-37-generic** (vermagic cocok, `/proc/rkit` aktif) — fitur menyusul; kode dapat fix ekstraksi getdents (bug identik modern); eBPF tetap opsi |
 
 ## Kenapa versi di sini penting (ringkas)
 
