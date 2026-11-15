@@ -152,8 +152,11 @@ static int gd_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
 	return 0;
 }
 
+/* Tipe entry handler ditulis LANGSUNG (bukan typedef): kretprobe_entry_handler_t
+ * tidak tersedia di semua versi header (gagal di 5.11.0-1021-aws) — gaya
+ * pointer-fungsi inline kompatibel dari2.6 s/d6.x. */
 static int rp_setup(struct kretprobe *rp, const char *sym,
-		    kretprobe_entry_handler_t entry)
+		    int (*entry)(struct kretprobe_instance *, struct pt_regs *))
 {
 	memset(rp, 0, sizeof(*rp));
 	rp->kp.symbol_name = sym;
