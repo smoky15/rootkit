@@ -85,6 +85,7 @@ dan **VM/lab** — bukan server produksi.
     ├── HOOK_TECHNIQUES.md# kenapa teknik tiap era berbeda
     ├── DETECTION.md      # cara rootkit ini DIDETEKSI
     ├── TESTING.md        # checklist uji wajib di VM
+    ├── QUICKTEST.md      # cheat-sheet uji cepat via CLI (perintah + hasil harapan)
     ├── PORTING.md        # cheatsheet patch antar versi
     └── DISCLAIMER.md     # batasan penggunaan
 ```
