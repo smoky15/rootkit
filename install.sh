@@ -48,6 +48,21 @@ case "$MAJ" in
 		fi
 		IFACE="/proc/rkit"
 		;;
+	7)
+		# EKSPERIMENTAL — jalur 7.x dibuka 2026-11-15: backend newest,
+		# teknik identik 6.9+ (kretprobe). BELUM teruji klaim dukungan:
+		# risiko PANIC saat load — siapkan akses CONSOLE (Proxmox/IPMI)
+		# sebelum insmod. Status docs tetap 🚧 sampai lolos TESTING.md.
+		echo "[!] ============== EKSPERIMENTAL =============="
+		echo "[!] kernel 7.x BELUM teruji — risiko PANIC saat load"
+		echo "[!] siapkan akses console (jangan andalkan SSH saja)"
+		echo "[!] ==========================================="
+		BACKEND_DIR="backend/newest_6x"
+		BACKEND_KIND="modern"
+		KO="$BACKEND_DIR/rkit6x.ko"
+		TEKNIK="kretprobe/kprobe (6.9+; 7.x EKSPERIMENTAL)"
+		IFACE="/proc/rkit"
+		;;
 	*)
 		echo "[!] kernel tidak dikenal ($K) — jangan dipakai"; exit 1
 		;;
