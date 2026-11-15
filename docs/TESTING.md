@@ -28,6 +28,7 @@
 ##3. Fungsional (sesuai fitur yang diklaim)
 
 - [ ] Hide file: buat file uji `bds_test` -> `ls` tak tampil -> path langsung tetap jalan
+- [ ] Hide folder: `mkdir` uji -> hilang dari `ls` induknya (mekanisme sama, filter nama)
 - [ ] Hide proses: (kalau ada) proses hilang dari `ps`
 - [ ] Hide koneksi: `ss` vs `netstat` konsisten (atau tersembunyi sesuai desain)
 - [ ] LPE (kalau ada): dari user biasa -> `id` = root

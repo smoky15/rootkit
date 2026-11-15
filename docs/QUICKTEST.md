@@ -25,6 +25,15 @@
    ls -la /tmp/tesrahasia.txt                    # path langsung tetap jalan (batas v1)
    /rootkit/control/cli/rkit unhide file tesrahasia.txt
 
+3b. HIDE FOLDER (mekanisme SAMA — filter nama entri, berlaku file ATAU folder;
+    nama CLI tetap "file" karena targetnya = nama, bukan jenis)
+    mkdir /tmp/rahasia-folder
+    ls -d /tmp/rahasia-folder                     # TERLIHAT
+    /rootkit/control/cli/rkit hide file rahasia-folder
+    ls /tmp | grep rahasia-folder                 # KOSONG (folder tersembunyi)
+    ls -d /tmp/rahasia-folder                     # path langsung tetap jalan (batas v1)
+    /rootkit/control/cli/rkit unhide file rahasia-folder
+
 4. HIDE PID
    sleep 600 &
    SP=$!
