@@ -45,7 +45,7 @@ status        : ✅
 | Kernel | Backend | Status | Catatan |
 |---|---|---|---|
 | 5.0 – 5.4 | `modern_5x_6x` | 🚧 | belum diuji |
-| 5.5 – 5.15 | `modern_5x_6x` | 🧪 | **2026-11-15: build+load OK di 5.11.0-1021-aws** (vermagic cocok, `/proc/rkit` aktif) — fitur menyusul; rujukan lama: bds_lkm_ftrace (5.15.0-198) |
+| 5.5 – 5.15 | `modern_5x_6x` | 🧪 | **fitur PENUH lulus di 5.15.0-198 (portal-1-new, 2026-11-16)**: LPE, hide file/folder/PID/port, self-hide, backdoor e2e, unload — semua ✅, tinggal §4 reboot; build+load juga di 5.11.0-1021-aws & 5.15.0-203-generic (pess); rujukan lama: bds_lkm_ftrace (5.15.0-198) |
 | 5.16 – 5.19 | `modern_5x_6x` | 🚧 | belum diuji |
 | 6.0 – 6.8 | `modern_5x_6x` | 🚧 | inspirasi: bds_lkm (klaim s/d6.8) |
 | PREREQ umum era ini | | | gcc + make + headers cocok; symbol resolver via kprobe (setelah5.7 `kallsyms` tak diekspor) |
