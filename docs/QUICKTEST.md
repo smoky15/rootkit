@@ -193,9 +193,10 @@
 # =============================================
 #  STEALTH SEKALI-JALAN (tanpa script terpisah)
 # =============================================
-#  sudo STEALTH=1 sh install.sh
+#  sudo sh install.sh --stealth           <- flag biasa (disarankan)
+#  sudo STEALTH=1 sh install.sh           <- alias lama
 #    = install normal + hide mod + dmesg -C (langkah10 di install.sh)
-#    tanpa flag = install biasa (modul tampil di lsmod, dipakai saat uji)
+#    TANPA flag = install biasa (modul tampil di lsmod, dipakai saat uji)
 
 # =============================================
 #  SELESAI

