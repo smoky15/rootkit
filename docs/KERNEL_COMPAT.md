@@ -10,7 +10,7 @@
 | **3.10.0-1160.59.1.el7** | `legacy_4x` (`L4X_OLD_ARGS`) | ✅ | **CentOS 7.9 —2026-11-15: seluruh checklist lolos** (detail: Bukti Uji di bawah) |
 | 2.6.x – 3.x (lain) | `legacy_4x` (`L4X_OLD_ARGS`) | 🚧 | kode ada (konvensi argumen lama) — uji di VM lama |
 | 4.0 – 4.16 | `legacy_4x` (`L4X_OLD_ARGS`) | 🚧 | signature argumen individual — target Ubuntu16.04 (4.4) |
-| 4.17 – 4.19 | `legacy_4x` (pt_regs) | 🚧 | target RHEL8 (4.18); Ubuntu18.04 (4.15) masih konvensi lama |
+| 4.17 – 4.19 | `legacy_4x` (pt_regs) | 🧪 | **build+load OK di 4.18.0-553.56.1.el8_10 (RHEL8, 2026-11-20)** — cabang konvensi pt_regs terbukti kompilasi+load pertama kali; fitur menyusul; Ubuntu18.04 (4.15) masih konvensi lama |
 | catatan | | ❌ | **jangan diuji di >=5.x**: `STRICT_KERNEL_RWX` + risiko panic (pembelajaran dari uji Reptile di 5.15) |
 
 ### Bukti Uji — CentOS7 / 3.10.0-1160.59.1.el7.x86_64 (2026-11-15)

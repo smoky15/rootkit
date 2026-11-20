@@ -24,7 +24,7 @@ build, vermagic-check, load, dan memasang auto-load saat boot.
 | Kernel | Backend | Status |
 |---|---|---|
 | 2.6 – 3.x | `backend/legacy_4x` (`L4X_OLD_ARGS`) | ✅ teruji di **3.10 el7** · 🚧 sisa rentang |
-| 4.0 – 4.19 | `backend/legacy_4x` | 🚧 kode ada, belum diuji |
+| 4.0 – 4.19 | `backend/legacy_4x` | 🧪 build+load OK di 4.18-el8 (cabang pt_regs) · fitur menyusul |
 | 5.0 – 6.8 | `backend/modern_5x_6x` | 🧪 fitur penuh lulus di 5.15.0-198 (portal) · tinggal uji reboot · sisa rentang 🚧 |
 | 6.9+ | `backend/newest_6x` | 🧪 build+load OK (6.14.0-37) · fitur menyusul |
 | 7.x | `backend/newest_6x` | 🚧 **EKSPERIMENTAL** — jalur install dibuka, menunggu uji (risiko panic) |
