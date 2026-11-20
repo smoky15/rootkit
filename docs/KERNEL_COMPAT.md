@@ -37,6 +37,8 @@ reboot penuh   : OK (2026-11-15 — modul auto-load @4.6 dtk sejak boot dengan
                 repo di /opt/.cache/.rkit karena /dev/shm = tmpfs terhapus)
 daemon        : online (POLL_INTERVAL=60 untuk uji; >=600 untuk pemakaian nyata)
 patch         : tidak ada
+variant       : build+load+STEALTH OK di 3.10.0-1160.156.1.el7.tuxcare.els4
+                (CentOS7 + kernel TuxCare ELS4 — bukan kernel standar,2026-11-21)
 status        : ✅
 ```
 
