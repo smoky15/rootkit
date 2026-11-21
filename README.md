@@ -75,6 +75,7 @@ dan **VM/lab** — bukan server produksi.
 ├── config.example.ini    # template konfigurasi (token diisi sendiri)
 ├── tools/
 │   ├── rkit-load.sh      # loader boot: insmod + restore state hide/backdoor
+│   ├── rkit-reload.sh    # LEGACY: reload dari state (daftar tak hilang)
 │   └── rkit-rehide.sh    # auto re-hide PID tiap boot (pola -> pgrep -> hide pid)
 ├── backend/              # modul kernel per-era (Lengkap)
 │   ├── legacy_4x/        #   2.6 -4.19  (sys_call_table + CR0.WP)

@@ -103,9 +103,15 @@
 # =============================================
 #  BAGIAN B — LEGACY (2.6 – 4.19: sinyal + param insmod)
 # =============================================
-#  TIDAK ada /proc/rkit, TIDAK ada CLI
+#  TIDAK ada /proc/rkit, TIDAK ada CLI — kontrol via sinyal + param insmod
 #  WAJIB: kill -s SPASI (bash menolak -s63 menempel)
-#  Ubah daftar = RELOAD (rmmod + insmod, tulis ULANG semua nama)
+#
+#  ALUR DAFTAR (penting!): reload = GANTI SELURUH daftar — supaya entri
+#  lama tak "muncul lagi", simpan semua di state lalu reload dari state:
+#    tambah entri : echo name folderx >> /var/lib/rkit/state   (name/pid/port)
+#    hapus entri  : sed -i '/^name folderx$/d' /var/lib/rkit/state
+#    terapkan     : sh tools/rkit-reload.sh        (rmmod+insmod dari state)
+#    (cara manual lama: tulis ULANG semua param saat insmod)
 
 1. IDENTIFIKASI + STATUS
    lsmod | grep rkit                            # rkit4x = legacy
